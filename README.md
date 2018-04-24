@@ -64,7 +64,7 @@ Please see [CONTRIBUTING](https://github.com/thephpleague/:package_name/blob/mas
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [foris-master](https://github.com/foris-master)
 - [All Contributors](https://github.com/thephpleague/:package_name/contributors)
 - [Orange dev team](https://developer.orange.com/apis/om-webpay/)
 
