@@ -33,3 +33,5 @@ build
 composer.lock
 docs
 vendor
+
+index.php
