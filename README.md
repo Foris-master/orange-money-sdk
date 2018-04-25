@@ -7,7 +7,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/orange-money-sdk.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/orange-money-sdk)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/orange-money-sdk.svg?style=flat-square)](https://packagist.org/packages/league/orange-money-sdk)
 
-**Note:** Replace `orange-money-sdk` with the correct package name in the above URLs, then delete this line.
+**Note:**  `orange-money-sdk`.
 
 This is a php sdk for orange operator mobile money api. 
 
