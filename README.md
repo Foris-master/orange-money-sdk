@@ -16,7 +16,7 @@ This is a php sdk for orange operator mobile money api.
 Via Composer
 
 ``` bash
-$ composer require foris-mater/orange-money-sdk
+$ composer require foris-master/orange-money-sdk
 ```
 
 ## Confing
@@ -49,9 +49,57 @@ $opt=[
         "lang"=> "fr"
     ];
 $om->webPayment($opt);
-echo $orange-money-sdk->echoPhrase('Hello, League!');
 ```
 
+## API
+
+### Get token
+
+``` php
+use Foris\OmSdk\OmSdk;
+
+$om = new OmSdk();
+
+$rep= $om->getToken();
+var_dump($rep);
+// var_dump result
+[
+        "token_type"=> 'Bearer',
+        "access_token"=> "0213GH123l12kj312k",
+        "expires_in"=> "7776000",
+];
+
+```
+### Web Payment
+
+``` php
+use Foris\OmSdk\OmSdk;
+
+$om = new OmSdk();
+$opt = [
+               "merchant_key"=> '********',
+               "currency"=> "OUV",
+               "order_id"=> $id,
+               "amount"=> 0,
+               "return_url"=> 'http://www.you-site.com/callback/return',
+               "cancel_url"=> 'http://www.you-site.com/callback/cancel',
+               "notif_url"=>'http://www.you-site.com/callback/notif',
+               "lang"=> "fr"
+           ];
+$rep= $om->webPayment($opt);
+var_dump($rep);
+// var_dump result
+[
+        "status"=> 201,
+        "message"=> "OK",
+        "pay_token"=> "87a9f2f8ebca97sdfdsbb49795f77981f5be1face7b6a543c8a1304d81e4299fd",
+        "payment_url"=>"https://webpayment-sb.orange-money.com/payment/pay_token/87a9f2f8ebca97sdfdsbb49795f77981f5be1face7b6a543c8a1304d81e4299fd"
+        "notif_token"=> "793d6157d9c7d52ae3920dc596956206"
+];
+```
+
+#### Note
+webPayment method automatically call getToken and set it in request header.
 ## Testing
 
 ``` bash
