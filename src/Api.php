@@ -10,7 +10,6 @@ namespace Foris\OmSdk;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use SimpleXMLElement;
 
 
 /**
@@ -169,6 +168,31 @@ class Api
         ];
 
         return $this->post('orange-money-webpay/dev/v1/webpayment',$options);
+    }
+
+    public function checkTransactionStatus($token, $data)
+    {
+
+        $b = [
+            "order_id" => $data["order_id"],
+            "amount" => $data["amount"],
+            "pay_token" => $data["pay_token"]
+        ];
+
+        $b = json_encode($b);
+
+        /* var_dump($b);
+         die();*/
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'body' => $b
+        ];
+
+        return $this->post('orange-money-webpay/dev/v1/transactionstatus', $options);
     }
 
 

@@ -100,6 +100,31 @@ var_dump($rep);
 
 #### Note
 webPayment method automatically call getToken and set it in request header.
+
+### Transaction Status
+
+``` php
+use Foris\OmSdk\OmSdk;
+
+$om = new OmSdk();
+
+$rep= $om->checkTransactionStatus($orderId,$amount,$pay_token);
+var_dump($rep);
+// var_dump result
+[
+         "status" => "SUCCESS",
+         "order_id" => "MY_ORDER_ID_08082105_0023457",
+         "txnid" => "MP150709.1341.A00073"
+];
+```
+#### Note
+The status could take one of the following values: INITIATED; PENDING; EXPIRED; SUCCESS; FAILED
+- INITIATED waiting for user entry
+- PENDING user has clicked on “Confirmer”, transaction is in progress on Orange side
+- EXPIRED user has clicked on “Confirmer” too late (after token’s validity)
+- SUCCESS payment is done
+- FAILED payment has failed
+
 ## Testing
 
 ``` bash
