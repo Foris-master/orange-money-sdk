@@ -18,7 +18,7 @@ class OmSdk
      */
     private  $token;
 
-    public function __construct(array $config = [])
+    public function __construct(array $config = array())
     {
        $this->api = new Api();
     }
@@ -53,11 +53,11 @@ class OmSdk
     public function checkTransactionStatus($orderId, $amount, $pay_token)
     {
 
-        $data = [
+        $data = array(
             "order_id" => $orderId,
             "amount" => $amount,
             "pay_token" => $pay_token
-        ];
+        );
         $dt = $this->getAccesToken();
         $rep = $this->api->checkTransactionStatus($this->token, $data);
 //        $data= $rep->getBody()->getContents();

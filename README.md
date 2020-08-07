@@ -125,6 +125,12 @@ The status could take one of the following values: INITIATED; PENDING; EXPIRED; 
 - SUCCESS payment is done
 - FAILED payment has failed
 
+## Production
+
+```
+  For production your need to set your target country code in COUNTRY enviroment variable ( .env file if using dotenv)
+  example : COUNTRY=cm
+```
 ## Testing
 
 ``` bash

@@ -7,6 +7,7 @@
  */
 
 namespace Foris\OmSdk;
+
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
@@ -28,47 +29,55 @@ class Api
      * The Query to run against the FileSystem
      * @var Client;
      */
-    private $client ;
+    private $client;
     /**
      * @var string or null
      */
-    private  $auth_header;
+    private $country;
     /**
      * @var string or null
      */
-    private  $credentials;
+    private $auth_header;
     /**
      * @var string or null
      */
-    private  $merchant_key;
+    private $credentials;
+    /**
+     * @var string or null
+     */
+    private $merchant_key;
 
-     /**
+    /**
      * @var string or null
      */
-    private  $return_url;
-     /**
+    private $return_url;
+    /**
      * @var string or null
      */
-    private  $cancel_url;
-     /**
+    private $cancel_url;
+    /**
      * @var string or null
      */
-    private  $notif_url;
+    private $notif_url;
+
     /**
      * Constructor
      * @param string $userid
      * @param string $password
      */
-    public function __construct() {
+    public function __construct()
+    {
         // Credentials: <Base64 value of UTF-8 encoded “username:password”>
-        $this->client = new Client([
+        $this->client = new Client(array(
             'base_uri' => self::BASE_URL
-        ]);
-        $this->auth_header= getenv("AUTH_HEADER");
-        $this->merchant_key= getenv("MERCHANT_KEY");
-        $this->return_url= getenv("RETURN_URL");
-        $this->cancel_url= getenv("CANCEL_URL");
-        $this->notif_url= getenv("NOTIF_URL");
+        ));
+        $this->auth_header = getenv("AUTH_HEADER");
+        $this->merchant_key = getenv("MERCHANT_KEY");
+        $this->return_url = getenv("RETURN_URL");
+        $this->cancel_url = getenv("CANCEL_URL");
+        $this->notif_url = getenv("NOTIF_URL");
+        $c = getenv('OM_COUNTRY');
+        $this->country = isset($c) ? $c : 'dev';
 
     }
 
@@ -78,14 +87,15 @@ class Api
      * @param string $endpoint
      * @param string $options
      */
-    private function apiCall($httpMethod, $endpoint, $options) {
+    private function apiCall($httpMethod, $endpoint, $options)
+    {
         // POST method or GET method
-        try{
+        try {
 //            $api_url = self::BASE_URL.$endpoint;
-            if(strtolower($httpMethod) === "post") {
+            if (strtolower($httpMethod) === "post") {
 
                 /** @var Response $response */
-                $response = $this->client->request('post',$endpoint,$options);
+                $response = $this->client->request('post', $endpoint, $options);
 
             } else {
                 $response = $this->client->get($endpoint);
@@ -97,104 +107,108 @@ class Api
             /** @var $body EntityBody */
 //            $body = $response->getBody();
 
-            return  $response;
-        }catch (Exception $exception){
-            return  $exception->getMessage();
-        };
+            return $response;
+        } catch (Exception $exception) {
+            return $exception->getMessage();
+        }
 
     }
+
     /**
      * Call GET request
      * @param string $endpoint
      * @param string $options
      */
-    private function get($endpoint, $options = null) {
+    private function get($endpoint, $options = null)
+    {
         return $this->apiCall("get", $endpoint, $options);
     }
+
     /**
      * Call POST request
      * @param string $endpoint
      * @param string $options
      */
-    private function post($endpoint, $options = null) {
+    private function post($endpoint, $options = null)
+    {
         return $this->apiCall("post", $endpoint, $options);
     }
+
     /**
      * Get Token
      */
     public function getToken()
     {
 
-        $options = [
-            'headers'=> [
-                'Authorization' => 'Basic '.$this->auth_header,
-                'Accept'=>'application/json'
-            ],
-            'form_params' => [
-                 'grant_type'=>'client_credentials',
-            ]
-        ];
+        $options = array(
+            'headers' => array(
+                'Authorization' => 'Basic ' . $this->auth_header,
+                'Accept' => 'application/json'
+            ),
+            'form_params' => array(
+                'grant_type' => 'client_credentials',
+            )
+        );
 
-        return $this->post('oauth/v2/token',$options);
+        return $this->post('oauth/v2/token', $options);
     }
 
 
-    public function Payment($token,$body)
+    public function Payment($token, $body)
     {
 
-        $id = "OCM_SDK_0".rand(100000,900000)."_00".rand(10000,90000);
-        $b = [
-            "merchant_key"=> $this->merchant_key,
-            "currency"=> "OUV",
-            "order_id"=> $id,
-            "amount"=> 0,
-            "return_url"=> $this->return_url,
-            "cancel_url"=> $this->cancel_url,
-            "notif_url"=> $this->notif_url,
-            "lang"=> "fr"
-        ];
-        $b = array_merge($b,$body);
+        $id = "OCM_SDK_0" . rand(100000, 900000) . "_00" . rand(10000, 90000);
+        $b = array(
+            "merchant_key" => $this->merchant_key,
+            "currency" => "OUV",
+            "order_id" => $id,
+            "amount" => 0,
+            "return_url" => $this->return_url,
+            "cancel_url" => $this->cancel_url,
+            "notif_url" => $this->notif_url,
+            "lang" => "fr"
+        );
+        $b = array_merge($b, $body);
         $b = json_encode($b);
 
-       /* var_dump($b);
-        die();*/
-        $options = [
-            'headers'=> [
-                'Authorization' => 'Bearer '.$token,
-                'Accept'=>'application/json',
-                'Content-Type'=>'application/json'
-            ],
+        /* var_dump($b);
+         die();*/
+        $options = array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $token,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ),
             'body' => $b
-        ];
+        );
 
-        return $this->post('orange-money-webpay/dev/v1/webpayment',$options);
+        return $this->post('orange-money-webpay/' . $this->country . '/v1/webpayment', $options);
     }
 
     public function checkTransactionStatus($token, $data)
     {
 
-        $b = [
+        $b = array(
             "order_id" => $data["order_id"],
             "amount" => $data["amount"],
             "pay_token" => $data["pay_token"]
-        ];
+        );
 
         $b = json_encode($b);
 
         /* var_dump($b);
          die();*/
-        $options = [
-            'headers' => [
+        $options = array(
+            'headers' => array(
                 'Authorization' => 'Bearer ' . $token,
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json'
-            ],
+            ),
             'body' => $b
-        ];
+        );
 
-        return $this->post('orange-money-webpay/dev/v1/transactionstatus', $options);
+        return $this->post('orange-money-webpay/' . $this->country . '/v1/transactionstatus', $options);
     }
-
 
 
 }
