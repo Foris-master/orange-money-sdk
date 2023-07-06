@@ -150,7 +150,7 @@ class Api
             )
         );
 
-        return $this->post('oauth/v2/token', $options);
+        return $this->post('oauth/v3/token', $options);
     }
 
 
